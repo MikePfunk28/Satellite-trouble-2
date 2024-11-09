@@ -13,7 +13,8 @@
         "assets.json",
         "tutorial.custom.ts",
         "pxt.json",
-        "main.py"
+        "main.py",
+        "tutorial-info-cache.json"
     ],
     "testFiles": [
         "test.ts"

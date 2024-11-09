@@ -1,12 +1,13 @@
-sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Satellite, function on_on_overlap(sprite: Sprite, otherSprite: Sprite) {
+def on_on_overlap(sprite, otherSprite):
     sprite.destroy()
-    info.changeScoreBy(1)
-    otherSprite.sayText("Ahhhh...")
-    otherSprite.setVelocity(-30, -30)
-})
-controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
-    
-    projectile = sprites.createProjectileFromSprite(img`
+    info.change_score_by(1)
+    otherSprite.say_text("Ahhhh...")
+    otherSprite.set_velocity(-30, -30)
+sprites.on_overlap(SpriteKind.projectile, SpriteKind.satellite, on_on_overlap)
+
+def on_a_pressed():
+    global projectile
+    projectile = sprites.create_projectile_from_sprite(img("""
             . 1 . 
                     . 1 . 
                     . 1 . 
@@ -19,21 +20,27 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
                     . 1 . 
                     . 1 . 
                     . 1 .
-        `, myShip, 0, -150)
-})
-sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Player, function on_on_overlap2(sprite2: Sprite, otherSprite2: Sprite) {
+        """),
+        myShip,
+        0,
+        -150)
+controller.A.on_event(ControllerButtonEvent.PRESSED, on_a_pressed)
+
+def on_on_overlap2(sprite2, otherSprite2):
     sprite2.destroy(effects.disintegrate, 100)
-    info.changeLifeBy(-1)
-    scene.cameraShake(4, 500)
-})
-info.onScore(20, function on_on_score() {
-    game.gameOver(true)
-})
-let myRock : Sprite = null
-let mySat : Sprite = null
-let projectile : Sprite = null
-let myShip : Sprite = null
-scene.setBackgroundImage(img`
+    info.change_life_by(-1)
+    scene.camera_shake(4, 500)
+sprites.on_overlap(SpriteKind.enemy, SpriteKind.player, on_on_overlap2)
+
+def on_on_score():
+    game.game_over(True)
+info.on_score(20, on_on_score)
+
+myRock: Sprite = None
+mySat: Sprite = None
+projectile: Sprite = None
+myShip: Sprite = None
+scene.set_background_image(img("""
     eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
         eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
         eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
@@ -274,9 +281,9 @@ scene.setBackgroundImage(img`
         eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
         eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
         eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-`)
-scroller.scrollBackgroundWithSpeed(0, 10)
-myShip = sprites.create(img`
+"""))
+scroller.scroll_background_with_speed(0, 10)
+myShip = sprites.create(img("""
         . . . . . . 9 9 . . . . . . 
             . . . . . 9 1 1 9 . . . . . 
             . . . . 9 1 1 1 1 9 . . . . 
@@ -296,10 +303,12 @@ myShip = sprites.create(img`
             . . . . 4 . 4 4 . 4 . . . . 
             . . . 4 . 5 4 5 5 . 4 . . . 
             . . . . . . . 4 . . . . . .
-    `, SpriteKind.Player)
-controller.moveSprite(myShip)
-myShip.setStayInScreen(true)
-animation.runImageAnimation(myShip, [img`
+    """),
+    SpriteKind.player)
+controller.move_sprite(myShip)
+myShip.set_stay_in_screen(True)
+animation.run_image_animation(myShip,
+    [img("""
             .......99.......
                 ......9119......
                 .....911119.....
@@ -322,7 +331,8 @@ animation.runImageAnimation(myShip, [img`
                 ................
                 ................
                 ................
-        `, img`
+        """),
+        img("""
             .......99.......
                 ......9119......
                 .....911119.....
@@ -345,7 +355,8 @@ animation.runImageAnimation(myShip, [img`
                 .....4..........
                 ................
                 ................
-        `, img`
+        """),
+        img("""
             .......99.......
                 ......9119......
                 .....911119.....
@@ -368,7 +379,8 @@ animation.runImageAnimation(myShip, [img`
                 .....4....5.....
                 ................
                 ................
-        `, img`
+        """),
+        img("""
             .......99.......
                 ......9119......
                 .....911119.....
@@ -391,10 +403,13 @@ animation.runImageAnimation(myShip, [img`
                 .....b....b.....
                 ................
                 ................
-        `], 100, true)
-game.onUpdateInterval(2000, function on_update_interval() {
-    
-    mySat = sprites.createProjectileFromSide(img`
+        """)],
+    100,
+    True)
+
+def on_update_interval():
+    global mySat
+    mySat = sprites.create_projectile_from_side(img("""
             .........bb.........
                     .........bb.........
                     bbbbbb...cc...bbbbbb
@@ -411,10 +426,13 @@ game.onUpdateInterval(2000, function on_update_interval() {
                     ....................
                     ....................
                     ....................
-        `, 0, 50)
+        """),
+        0,
+        50)
     mySat.x = randint(5, 155)
-    mySat.setKind(SpriteKind.Satellite)
-    animation.runImageAnimation(mySat, [img`
+    mySat.set_kind(SpriteKind.satellite)
+    animation.run_image_animation(mySat,
+        [img("""
                 .........bb.........
                         .........bb.........
                         bbbbbb...cc...bbbbbb
@@ -431,7 +449,8 @@ game.onUpdateInterval(2000, function on_update_interval() {
                         ....................
                         ....................
                         ....................
-            `, img`
+            """),
+            img("""
                 .........bb.........
                         .........bb.........
                         bbbbbb...cc...bbbbbb
@@ -448,11 +467,14 @@ game.onUpdateInterval(2000, function on_update_interval() {
                         ....................
                         ....................
                         ....................
-            `], 100, true)
-})
-game.onUpdateInterval(3000, function on_update_interval2() {
-    
-    myRock = sprites.createProjectileFromSide(img`
+            """)],
+        100,
+        True)
+game.on_update_interval(2000, on_update_interval)
+
+def on_update_interval2():
+    global myRock
+    myRock = sprites.create_projectile_from_side(img("""
             . . . . . . . . . . . . . . . . 
                     . . . . . . . . . . . . . . . . 
                     . . . . . . . . . . . . . . . . 
@@ -469,10 +491,13 @@ game.onUpdateInterval(3000, function on_update_interval2() {
                     . . . . . . . c . . . . . . . . 
                     . . . . . . . . . . . . . . . . 
                     . . . . . . . . . . . . . . . .
-        `, 0, 90)
+        """),
+        0,
+        90)
     myRock.x = randint(5, 155)
-    myRock.setKind(SpriteKind.Enemy)
-    animation.runImageAnimation(myRock, [img`
+    myRock.set_kind(SpriteKind.enemy)
+    animation.run_image_animation(myRock,
+        [img("""
                 . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
@@ -489,7 +514,8 @@ game.onUpdateInterval(3000, function on_update_interval2() {
                         . . . . . . . c . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . .
-            `, img`
+            """),
+            img("""
                 . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
@@ -506,7 +532,8 @@ game.onUpdateInterval(3000, function on_update_interval2() {
                         . . . . . b b c . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . .
-            `, img`
+            """),
+            img("""
                 . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
@@ -523,7 +550,8 @@ game.onUpdateInterval(3000, function on_update_interval2() {
                         . . . . . . a a b b c . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . .
-            `, img`
+            """),
+            img("""
                 . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . . 
@@ -540,5 +568,7 @@ game.onUpdateInterval(3000, function on_update_interval2() {
                         . . . . . . . . c . . . . . . . 
                         . . . . . . . . . . . . . . . . 
                         . . . . . . . . . . . . . . . .
-            `], 100, true)
-})
+            """)],
+        100,
+        True)
+game.on_update_interval(3000, on_update_interval2)

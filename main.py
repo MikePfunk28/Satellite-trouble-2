@@ -5,6 +5,12 @@ def on_on_overlap(sprite, otherSprite):
     otherSprite.set_velocity(-30, -30)
 sprites.on_overlap(SpriteKind.projectile, SpriteKind.satellite, on_on_overlap)
 
+def on_on_overlap2(sprite2, otherSprite2):
+    sprite2.destroy(effects.disintegrate, 100)
+    info.change_life_by(-1)
+    scene.camera_shake(4, 500)
+sprites.on_overlap(SpriteKind.enemy, SpriteKind.player, on_on_overlap2)
+
 def on_a_pressed():
     global projectile
     projectile = sprites.create_projectile_from_sprite(img("""
@@ -24,16 +30,15 @@ def on_a_pressed():
         myShip,
         0,
         -150)
+    music.play(music.melody_playable(music.pew_pew),
+        music.PlaybackMode.UNTIL_DONE)
 controller.A.on_event(ControllerButtonEvent.PRESSED, on_a_pressed)
-
-def on_on_overlap2(sprite2, otherSprite2):
-    sprite2.destroy(effects.disintegrate, 100)
-    info.change_life_by(-1)
-    scene.camera_shake(4, 500)
-sprites.on_overlap(SpriteKind.enemy, SpriteKind.player, on_on_overlap2)
 
 def on_on_score():
     game.game_over(True)
+    effects.confetti.end_screen_effect()
+    music.play(music.string_playable("C5 A B G A F G E ", 120),
+        music.PlaybackMode.LOOPING_IN_BACKGROUND)
 info.on_score(20, on_on_score)
 
 myRock: Sprite = None
@@ -406,6 +411,8 @@ animation.run_image_animation(myShip,
         """)],
     100,
     True)
+music.play(music.string_playable("C5 F B E A D G C ", 120),
+    music.PlaybackMode.UNTIL_DONE)
 
 def on_update_interval():
     global mySat
